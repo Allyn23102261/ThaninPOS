@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanin POS System - Tea & Beverages</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6becdb 0%, #5cec8c 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .main-container {
+      display: flex;
+      gap: 20px;
+      max-width: 1400px;
+      margin: auto;
+      flex-wrap: wrap;
+    }
+    
+    .products-section {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .cart-section {
+      width: 350px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      padding: 20px;
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+    }
+    
+    .header {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .header h1 {
+      color: #764ba2;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .item-btn {
+      cursor: pointer;
+      text-align: center;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .item-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border-color: #667eea;
+    }
+    
+    .item-btn img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .item-btn p {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    .item-price {
+      color: #667eea;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .cart-header {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+    
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+    
+    .cart-item-name {
+      flex: 1;
+      font-weight: 600;
+    }
+    
+    .cart-item-qty {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      font-size: 12px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .qty-btn:hover {
+      background: #667eea;
+      color: white;
+    }
+    
+    .remove-btn {
+      background: #ff6b6b;
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+    
+    .remove-btn:hover {
+      background: #ff5252;
+    }
+    
+    .summary {
+      border-top: 2px solid #667eea;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    .summary-row.subtotal {
+      color: #666;
+    }
+    
+    .summary-row.tax {
+      color: #666;
+    }
+    
+    .summary-row.total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #764ba2;
+      margin-top: 10px;
+    }
+    
+    .payment-section {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+    }
+    
+    .payment-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .payment-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .payment-btn {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .payment-btn.active {
+      border-color: #667eea;
+      background: #f0f4ff;
+      color: #667eea;
+    }
+    
+    .payment-btn:hover {
+      border-color: #667eea;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    button {
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    button:hover {
+      background: #764ba2;
+      transform: translateY(-2px);
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .clear-btn {
+      background: #ff6b6b;
+    }
+    
+    .clear-btn:hover {
+      background: #ff5252;
+    }
+    
+    .checkout-btn {
+      grid-column: 1 / -1;
+      background: #10b981;
+      font-size: 16px;
+      padding: 15px;
+    }
+    
+    .checkout-btn:hover {
+      background: #059669;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .modal-header {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .size-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .size-option {
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .size-option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .size-option.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+    
+    .size-oz {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .size-price {
+      font-size: 18px;
+      color: #764ba2;
+      margin-top: 5px;
+    }
+    
+    .size-option.selected .size-price {
+      color: white;
+    }
+    
+    .receipt {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .receipt-header {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed #999;
+      padding-bottom: 10px;
+    }
+    
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .receipt-total {
+      border-top: 1px dashed #999;
+      padding-top: 10px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    
+    .order-history {
+      margin-top: 20px;
+    }
+    
+    .history-toggle {
+      background: #667eea;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .history-list {
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .history-list.active {
+      display: block;
+    }
+    
+    .history-item {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .history-time {
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .history-amount {
+      font-weight: bold;
+      color: #764ba2;
+      font-size: 14px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab {
+      padding: 10px 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      font-weight: 600;
+      position: relative;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      
+      .cart-section {
+        width: 100%;
+        position: static;
+      }
+      
+      .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Products Section -->
+    <div class="products-section">
+      <div class="header">
+        <h1>☕ Thanin Co</h1>
+        <p>Premium Tea & Beverages POS System</p>
+      </div>
+      
+      <div class="items-grid">
+        <div class="item-btn" onclick="openSizeModal('Lemongrass Tea', 'lemongrass.png', [{size: 16, price: 89}, {size: 22, price: 115}])">
+          <img src="lemongrass.png" alt="Lemongrass Tea">
+          <p>Lemongrass Tea</p>
+          <div class="item-price">₱89 - ₱115</div>
+        </div>
+        
+        <div class="item-btn" onclick="openSizeModal('Peach Tea', 'peach.jpg', [{size: 16, price: 89}, {size: 22, price: 115}])">
+          <img src="peach.jpg" alt="Peach Tea">
+          <p>Peach Tea</p>
+          <div class="item-price">₱89 - ₱115</div>
+        </div>
+        
+        <div class="item-btn" onclick="openSizeModal('Frosty Tea', 'frosty.jpg', [{size: 16, price: 89}, {size: 22, price: 115}])">
+          <img src="frosty.jpg" alt="Frosty Tea">
+          <p>Frosty Tea</p>
+          <div class="item-price">₱89 - ₱115</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cart Section -->
+    <div class="cart-section">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('cart')">🛒 Cart</button>
+        <button class="tab" onclick="switchTab('history')">📋 History</button>
+      </div>
+      
+      <!-- Cart Tab -->
+      <div id="cart" class="tab-content active">
+        <div class="cart-header">Order Items</div>
+        <div class="cart-items" id="cartItems"></div>
+        
+        <div class="summary">
+          <div class="summary-row subtotal">
+            <span>Subtotal:</span>
+            <span id="subtotal">₱0.00</span>
+          </div>
+          <div class="summary-row tax">
+            <span>Tax (12%):</span>
+            <span id="taxAmount">₱0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>TOTAL:</span>
+            <span id="totalDisplay">₱0.00</span>
+          </div>
+        </div>
+        
+        <div class="payment-section">
+          <div class="payment-label">Payment Method</div>
+          <div class="payment-methods">
+            <button class="payment-btn active" onclick="selectPayment('cash')">💵 Cash</button>
+            <button class="payment-btn" onclick="selectPayment('card')">💳 Card</button>
+            <button class="payment-btn" onclick="selectPayment('gcash')">📱 GCash</button>
+            <button class="payment-btn" onclick="selectPayment('check')">📄 Check</button>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="clear-btn" onclick="clearCart()">🗑️ Clear</button>
+          <button class="checkout-btn" onclick="checkout()" style="grid-column: 1 / -1;">✓ Complete Sale</button>
+        </div>
+      </div>
+      
+      <!-- History Tab -->
+      <div id="history" class="tab-content">
+        <div class="order-history">
+          <button class="history-toggle" onclick="toggleHistory()">📊 Show Order History</button>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size Selection Modal -->
+  <div id="sizeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header" id="modalTitle">Choose Size</div>
+      <div class="size-options" id="sizeOptions"></div>
+      <div class="action-buttons">
+        <button onclick="closeSizeModal()" class="clear-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Receipt</div>
+      <div id="receiptContent" class="receipt"></div>
+      <div class="action-buttons">
+        <button onclick="printReceipt()" class="checkout-btn">🖨️ Print</button>
+        <button onclick="finalizeCheckout()" class="checkout-btn">✓ Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+    let orderHistory = [];
+    let selectedPaymentMethod = 'cash';
+    let currentSizeModal = null;
+
+    function openSizeModal(itemName, image, sizes) {
+      currentSizeModal = { name: itemName, image: image, sizes: sizes };
+      document.getElementById('modalTitle').textContent = itemName;
+      
+      const sizeOptions = document.getElementById('sizeOptions');
+      sizeOptions.innerHTML = '';
+      
+      sizes.forEach(option => {
+        const btn = document.createElement('div');
+        btn.className = 'size-option';
+        btn.innerHTML = `
+          <div class="size-oz">${option.size}oz</div>
+          <div class="size-price">₱${option.price.toFixed(0)}</div>
+        `;
+        btn.onclick = () => addItemToCart(itemName, option.size, option.price);
+        sizeOptions.appendChild(btn);
+      });
+      
+      document.getElementById('sizeModal').classList.add('active');
+    }
+
+    function closeSizeModal() {
+      document.getElementById('sizeModal').classList.remove('active');
+      currentSizeModal = null;
+    }
+
+    function addItemToCart(name, size, price) {
+      const item = {
+        id: Date.now(),
+        name: name,
+        size: size,
+        price: price,
+        quantity: 1
+      };
+      
+      // Check if item already exists
+      const existing = cart.find(i => i.name === name && i.size === size);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push(item);
+      }
+      
+      updateCartDisplay();
+      closeSizeModal();
+    }
+
+    function updateCartDisplay() {
+      const cartItems = document.getElementById('cartItems');
+      cartItems.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No items in cart</p>';
+      } else {
+        cart.forEach(item => {
+          const cartItem = document.createElement('div');
+          cartItem.className = 'cart-item';
+          cartItem.innerHTML = `
+            <div class="cart-item-name">${item.name}<br><small>${item.size}oz</small></div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
+              <span style="width: 20px; text-align: center;">${item.quantity}</span>
+              <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+            </div>
+            <div style="text-align: right;">
+              <div>₱${(item.price * item.quantity).toFixed(2)}</div>
+              <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+            </div>
+          `;
+          cartItems.appendChild(cartItem);
+        });
+      }
+      
+      updateSummary();
+    }
+
+    function updateQuantity(itemId, change) {
+      const item = cart.find(i => i.id === itemId);
+      if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+          removeFromCart(itemId);
+        } else {
+          updateCartDisplay();
+        }
+      }
+    }
+
+    function removeFromCart(itemId) {
+      cart = cart.filter(i => i.id !== itemId);
+      updateCartDisplay();
+    }
+
+    function updateSummary() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const tax = subtotal * 0.12;
+      const total = subtotal + tax;
+      
+      document.getElementById('subtotal').textContent = '₱' + subtotal.toFixed(2);
+      document.getElementById('taxAmount').textContent = '₱' + tax.toFixed(2);
+      document.getElementById('totalDisplay').textContent = '₱' + total.toFixed(2);
+    }
+
+    function selectPayment(method) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.payment-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('.payment-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(method)) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    function clearCart() {
+      if (confirm('Clear all items from cart?')) {
+        cart = [];
+        updateCartDisplay();
+      }
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert('Cart is empty!');
+        return;
+      }
+      
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const tax = subtotal * 0.12;
+      const total = subtotal + tax;
+      
+      generateReceipt(subtotal, tax, total);
+      document.getElementById('checkoutModal').classList.add('active');
+    }
+
+    function generateReceipt(subtotal, tax, total) {
+      const now = new Date();
+      const timestamp = now.toLocaleString('en-PH');
+      
+      let receipt = `
+        <div class="receipt-header">
+          ☕ THANIN TEA HOUSE<br>
+          Receipt
+        </div>
+      `;
+      
+      receipt += '<div style="margin-bottom: 10px; font-size: 12px;">' + timestamp + '</div>';
+      receipt += '<div style="margin-bottom: 10px; border-bottom: 1px dashed #999; padding-bottom: 10px;">';
+      
+      cart.forEach(item => {
+        receipt += `
+          <div class="receipt-item">
+            <span>${item.name} ${item.size}oz x${item.quantity}</span>
+            <span>₱${(item.price * item.quantity).toFixed(2)}</span>
+          </div>
+        `;
+      });
+      
+      receipt += `
+        </div>
+        <div class="receipt-total">
+          <div class="receipt-item">
+            <span>Subtotal:</span>
+            <span>₱${subtotal.toFixed(2)}</span>
+          </div>
+          <div class="receipt-item">
+            <span>Tax (12%):</span>
+            <span>₱${tax.toFixed(2)}</span>
+          </div>
+          <div class="receipt-item" style="font-size: 14px; margin-top: 10px;">
+            <span>TOTAL:</span>
+            <span>₱${total.toFixed(2)}</span>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 15px; font-size: 12px; color: #666;">
+          Payment: ${selectedPaymentMethod.toUpperCase()}<br>
+          Thank you for your purchase!<br>
+          <br>
+          ★★★★★
+        </div>
+      `;
+      
+      document.getElementById('receiptContent').innerHTML = receipt;
+    }
+
+    function printReceipt() {
+      const printContent = document.getElementById('receiptContent').innerHTML;
+      const originalContent = document.body.innerHTML;
+      
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = originalContent;
+      
+      // Rebind events after restoring content
+      location.reload();
+    }
+
+    function finalizeCheckout() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal * 1.12;
+      
+      const order = {
+        id: 'ORD-' + Date.now(),
+        items: [...cart],
+        total: total,
+        payment: selectedPaymentMethod,
+        timestamp: new Date().toLocaleString('en-PH')
+      };
+      
+      orderHistory.unshift(order);
+      if (orderHistory.length > 20) orderHistory.pop();
+      
+      cart = [];
+      updateCartDisplay();
+      document.getElementById('checkoutModal').classList.remove('active');
+      alert('✓ Sale completed! Thank you!');
+      updateHistoryDisplay();
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function toggleHistory() {
+      const historyList = document.getElementById('historyList');
+      historyList.classList.toggle('active');
+      if (historyList.classList.contains('active') && orderHistory.length === 0) {
+        updateHistoryDisplay();
+      }
+    }
+
+    function updateHistoryDisplay() {
+      const historyList = document.getElementById('historyList');
+      
+      if (orderHistory.length === 0) {
+        historyList.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No order history</p>';
+        return;
+      }
+      
+      historyList.innerHTML = '';
+      orderHistory.forEach(order => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        let itemsText = order.items.map(i => `${i.name} (${i.size}oz) x${i.quantity}`).join(', ');
+        historyItem.innerHTML = `
+          <div class="history-time">${order.timestamp}</div>
+          <div>${order.id}</div>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">${itemsText}</div>
+          <div class="history-amount">₱${order.total.toFixed(2)} • ${order.payment}</div>
+        `;
+        historyList.appendChild(historyItem);
+      });
+    }
+  </script>
+</body>
+</html>
