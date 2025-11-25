@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple POS System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    button {
+      padding: 8px 12px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simple POS System</h1>
+
+    <label>Item Name:</label>
+    <input type="text" id="itemName" />
+    <label>Price:</label>
+    <input type="number" id="itemPrice" />
+    <label>Quantity:</label>
+    <input type="number" id="itemQty" value="1" />
+    <button onclick="addItem()">Add Item</button>
+
+    <table id="itemsTable">
+      <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </table>
+
+    <div class="total" id="totalDisplay">Total: $0</div>
+  </div>
+
+  <script>
+    let total = 0;
+
+    function addItem() {
+      const name = document.getElementById('itemName').value;
+      const price = parseFloat(document.getElementById('itemPrice').value);
+      const qty = parseInt(document.getElementById('itemQty').value);
+
+      if (!name || price <= 0 || qty <= 0) {
+        alert('Please fill out valid item details.');
+        return;
+      }
+
+      const table = document.getElementById('itemsTable');
+      const row = table.insertRow();
+
+      const cell1 = row.insertCell(0);
+      const cell2 = row.insertCell(1);
+      const cell3 = row.insertCell(2);
+      const cell4 = row.insertCell(3);
+      const cell5 = row.insertCell(4);
+
+      const subtotal = price * qty;
+      total += subtotal;
+
+      cell1.innerHTML = name;
+      cell2.innerHTML = `$${price.toFixed(2)}`;
+      cell3.innerHTML = qty;
+      cell4.innerHTML = `$${subtotal.toFixed(2)}`;
+      cell5.innerHTML = `<button onclick="removeItem(this, ${subtotal})">Remove</button>`;
+
+      updateTotal();
+    }
+
+    function removeItem(button, subtotal) {
+      const row = button.parentNode.parentNode;
+      row.remove();
+      total -= subtotal;
+      updateTotal();
+    }
+
+    function updateTotal() {
+      document.getElementById('totalDisplay').innerText = `Total: $${total.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
