@@ -63,10 +63,10 @@
     }
     
     .items-grid {
-      display: flex;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      justify-content: center;
-      gap: 15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      justify-content: center; 
+      gap: 1.5rem;
       margin-bottom: 20px;
     }
     
@@ -74,7 +74,7 @@
       cursor: pointer;
       text-align: center;
       background: white;
-      padding: 15px;
+      padding: 25px;
       border-radius: 12px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
@@ -848,4 +848,5 @@
   </script>
 </body>
 </html>
+
 
